@@ -40,8 +40,8 @@ namespace CoreApiAdoDemo
                 c.SwaggerDoc("v1", new Info
                 {
                     Version = "v1",
-                    Title = "My API",
-                    Description = "My First ASP.NET Core Web API",
+                    Title = "Rest API",
+                    Description = "Audit Rest API",
                     TermsOfService = "None",                     
                 });
             });
