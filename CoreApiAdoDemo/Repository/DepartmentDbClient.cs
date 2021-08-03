@@ -25,16 +25,16 @@ namespace CoreApiAdoDemo.Repository
 
         public string SaveDepartment(DepartmentModel model, string connString)
         {
-            var outParam = new SqlParameter("@ReturnCode", SqlDbType.NVarChar, 20)
+            var outParam = new SqlParameter("@DEPARTMENTID", SqlDbType.BigInt)
             {
-                Direction = ParameterDirection.Output
+                Direction = ParameterDirection.InputOutput
             };
             SqlParameter[] param = {
-                new SqlParameter("@Id",model.Id),
-                new SqlParameter("@Name",model.Name),
-                new SqlParameter("@EmailId",model.Code),
-                new SqlParameter("@Mobile",model.Description),
-                new SqlParameter("@Address",model.Code),
+                new SqlParameter("@COMPANYID",model.CompanyId),
+                new SqlParameter("@CODE",model.Code),
+                new SqlParameter("@NAME",model.Name),
+                new SqlParameter("@DESCRIPTION",model.Description),
+                new SqlParameter("@CREATED_BY", 1),
                 outParam
             };
             SqlHelper.ExecuteProcedureReturnString(connString, "SP_145_Department_InsertUpdate", param);
