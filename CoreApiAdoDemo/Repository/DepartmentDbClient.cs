@@ -41,6 +41,52 @@ namespace CoreApiAdoDemo.Repository
             return (string)outParam.Value;
         }
 
+        public string DeleteDepartment(string connString, int updatedby)
+        {
+            var outParam = new SqlParameter("@DEPARTMENTID", SqlDbType.BigInt)
+            {
+                Direction = ParameterDirection.InputOutput
+            };
+            SqlParameter[] param = {
+                new SqlParameter("@UPDATEDBY", updatedby),
+                outParam
+            };
+            SqlHelper.ExecuteProcedureReturnString(connString, "SP_145_Department_Delete", param);
+            return (string)outParam.Value;
+        }
 
+        public string SaveUser(UsersModel model, string connString)
+        {
+            var outParam = new SqlParameter("@ReturnCode", SqlDbType.NVarChar, 20)
+            {
+                Direction = ParameterDirection.Output
+            };
+            SqlParameter[] param = {
+                new SqlParameter("@Id",model.Id),
+                new SqlParameter("@Name",model.Name),
+                new SqlParameter("@EmailId",model.EmailId),
+                new SqlParameter("@Mobile",model.Mobile),
+                new SqlParameter("@Address",model.Address),
+                outParam
+            };
+            SqlHelper.ExecuteProcedureReturnString(connString, "SP_145_Department_InsertUpdate", param);
+            return (string)outParam.Value;
+        }
+
+
+        public string DeleteDepartment(int id, string connString)
+        {
+            var outParam = new SqlParameter("@DEPARTMENTID", SqlDbType.BigInt)
+            {
+                Direction = ParameterDirection.InputOutput,
+                Value = id
+            };
+            SqlParameter[] param = {
+                new SqlParameter("@UPDATEDBY", 1),
+                outParam
+            };
+            SqlHelper.ExecuteProcedureReturnString(connString, "SP_145_Department_Delete", param);
+            return (string)outParam.Value;
+        }
     }
 }

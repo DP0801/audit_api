@@ -32,5 +32,24 @@ namespace CoreApiAdoDemo.Controllers
             var data = DbClientFactory<DepartmentDbClient>.Instance.GetAllDepartments(appSettings.Value.DbConn, "ALL");
             return Ok(data);
         }
+
+        [HttpPost]
+        [Route("DeleteUser")]
+        public IActionResult DeleteUser([FromBody]DepartmentModel model)
+        {
+            var msg = new Message<DepartmentModel>();
+            var data = DbClientFactory<DepartmentDbClient>.Instance.DeleteDepartment(model.Id, appSettings.Value.DbConn);
+            if (data == "C200")
+            {
+                msg.IsSuccess = true;
+                msg.ReturnMessage = "User Deleted";
+            }
+            else if (data == "C203")
+            {
+                msg.IsSuccess = false;
+                msg.ReturnMessage = "Invalid record";
+            }
+            return Ok(msg);
+        }
     }
 }
