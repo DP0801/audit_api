@@ -34,21 +34,50 @@ namespace CoreApiAdoDemo.Controllers
         }
 
         [HttpPost]
-        [Route("DeleteUser")]
-        public IActionResult DeleteUser([FromBody]DepartmentModel model)
+        [Route("SaveDepartment")]
+        public IActionResult SaveDepartment([FromBody]DepartmentModel model)
+        {
+            var msg = new Message<DepartmentModel>();
+            var data = DbClientFactory<DepartmentDbClient>.Instance.SaveDepartment(model, appSettings.Value.DbConn);
+            if (data != "")
+            {
+                msg.IsSuccess = true;
+                if (model.Id == 0)
+                    msg.ReturnMessage = "Department saved successfully";
+                else
+                    msg.ReturnMessage = "Department updated successfully";
+            }
+
+            return Ok(msg);
+        }
+
+        [HttpPost]
+        [Route("UpdateDepartment")]
+        public IActionResult UpdateDepartment([FromBody]DepartmentModel model)
+        {
+            var msg = new Message<DepartmentModel>();
+            var data = DbClientFactory<DepartmentDbClient>.Instance.UpdateDepartment(model, appSettings.Value.DbConn);
+            if (data != "")
+            {
+                msg.IsSuccess = true; 
+                msg.ReturnMessage = "Department updated successfully";
+            }
+
+            return Ok(msg);
+        }
+
+        [HttpDelete]
+        [Route("DeleteDeparment")]
+        public IActionResult DeleteDeparment([FromBody]DepartmentModel model)
         {
             var msg = new Message<DepartmentModel>();
             var data = DbClientFactory<DepartmentDbClient>.Instance.DeleteDepartment(model.Id, appSettings.Value.DbConn);
-            if (data == "C200")
+            if (data != "")
             {
                 msg.IsSuccess = true;
-                msg.ReturnMessage = "User Deleted";
+                msg.ReturnMessage = "Department Deleted";
             }
-            else if (data == "C203")
-            {
-                msg.IsSuccess = false;
-                msg.ReturnMessage = "Invalid record";
-            }
+
             return Ok(msg);
         }
     }

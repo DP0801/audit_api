@@ -23,57 +23,60 @@ namespace CoreApiAdoDemo.Repository
                 "SP_145_Department_Get", r => r.TranslateAsDepartmentList(), param);
         }
 
+        public DepartmentModel GetDepartmentById(string connString, string action, Int32 id)
+        {
+            SqlParameter[] param = {
+                new SqlParameter("@ACTION", action),
+                new SqlParameter("@DEPARTMENTID", id)
+            };
+            return SqlHelper.ExtecuteProcedureReturnData<DepartmentModel>(connString,
+                "SP_145_Department_Get", r => r.TranslateAsDepartment(), param);
+        }
+
         public string SaveDepartment(DepartmentModel model, string connString)
         {
             var outParam = new SqlParameter("@DEPARTMENTID", SqlDbType.BigInt)
             {
-                Direction = ParameterDirection.InputOutput
+                Direction = ParameterDirection.Output
             };
             SqlParameter[] param = {
+                outParam,
                 new SqlParameter("@COMPANYID",model.CompanyId),
                 new SqlParameter("@CODE",model.Code),
                 new SqlParameter("@NAME",model.Name),
                 new SqlParameter("@DESCRIPTION",model.Description),
-                new SqlParameter("@CREATED_BY", 1),
-                outParam
+                new SqlParameter("@CREATED_BY", 1)
             };
             SqlHelper.ExecuteProcedureReturnString(connString, "SP_145_Department_InsertUpdate", param);
-            return (string)outParam.Value;
+            return Convert.ToString(outParam.Value);
         }
 
-        public string DeleteDepartment(string connString, int updatedby)
+        public string UpdateDepartment(DepartmentModel model, string connString)
         {
+            var deptModel = new DepartmentModel();
+            deptModel = GetDepartmentById(connString, "GETFORID", model.Id);
+
+            deptModel.Code = model.Code;
+            deptModel.Name = model.Name;
+            deptModel.Description = model.Description;
+
             var outParam = new SqlParameter("@DEPARTMENTID", SqlDbType.BigInt)
             {
+                Value = model.Id,
                 Direction = ParameterDirection.InputOutput
             };
             SqlParameter[] param = {
-                new SqlParameter("@UPDATEDBY", updatedby),
-                outParam
-            };
-            SqlHelper.ExecuteProcedureReturnString(connString, "SP_145_Department_Delete", param);
-            return (string)outParam.Value;
-        }
-
-        public string SaveUser(UsersModel model, string connString)
-        {
-            var outParam = new SqlParameter("@ReturnCode", SqlDbType.NVarChar, 20)
-            {
-                Direction = ParameterDirection.Output
-            };
-            SqlParameter[] param = {
-                new SqlParameter("@Id",model.Id),
-                new SqlParameter("@Name",model.Name),
-                new SqlParameter("@EmailId",model.EmailId),
-                new SqlParameter("@Mobile",model.Mobile),
-                new SqlParameter("@Address",model.Address),
-                outParam
+                outParam,
+                new SqlParameter("@COMPANYID",deptModel.CompanyId),
+                new SqlParameter("@CODE",deptModel.Code),
+                new SqlParameter("@NAME",deptModel.Name),
+                new SqlParameter("@DESCRIPTION",deptModel.Description),
+                new SqlParameter("@CREATED_BY", 1)
             };
             SqlHelper.ExecuteProcedureReturnString(connString, "SP_145_Department_InsertUpdate", param);
-            return (string)outParam.Value;
+            return Convert.ToString(outParam.Value);
         }
-
-
+         
         public string DeleteDepartment(int id, string connString)
         {
             var outParam = new SqlParameter("@DEPARTMENTID", SqlDbType.BigInt)
@@ -82,11 +85,11 @@ namespace CoreApiAdoDemo.Repository
                 Value = id
             };
             SqlParameter[] param = {
-                new SqlParameter("@UPDATEDBY", 1),
-                outParam
+                outParam,
+                new SqlParameter("@UPDATEDBY", 1)                
             };
             SqlHelper.ExecuteProcedureReturnString(connString, "SP_145_Department_Delete", param);
-            return (string)outParam.Value;
+            return Convert.ToString(outParam.Value);
         }
     }
 }

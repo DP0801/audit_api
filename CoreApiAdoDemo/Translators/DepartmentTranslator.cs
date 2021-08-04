@@ -25,6 +25,9 @@ namespace CoreApiAdoDemo.Translators
             if (reader.IsColumnExists("DEPARTMENTNAME"))
                 item.Name = SqlHelper.GetNullableString(reader, "DEPARTMENTNAME");
 
+            if (reader.IsColumnExists("COMPANYID"))
+                item.CompanyId = SqlHelper.GetNullableInt32(reader, "COMPANYID");
+
             if (reader.IsColumnExists("COMPANYNAME"))
                 item.CompanyName = SqlHelper.GetNullableString(reader, "COMPANYNAME");
 
